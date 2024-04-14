@@ -25,12 +25,12 @@ ag.add_argument("-b", "--batch", required=False, type=bool,
 args = vars(ag.parse_args())
 
 
-def split_image(x, y, quarterX, quarterY, image, output_dir):
+def split_image(x, y, quarter_x, quarter_y, image, output_dir):
     print("Splitting image...")
-    roi1 = image[0:(quarterY + args["lap"]), 0:(quarterX + args["lap"])]  # top left crop
-    roi2 = image[0:(quarterY + args["lap"]), (quarterX - args["lap"]):x]  # top right crop
-    roi3 = image[(quarterY - args["lap"]):y, (quarterX - args["lap"]):x]  # bottom right crop
-    roi4 = image[(quarterY - args["lap"]):y, 0:(quarterX + args["lap"])]  # bottom left crop
+    roi1 = image[0:(quarter_y + args["lap"]), 0:(quarter_x + args["lap"])]  # top left crop
+    roi2 = image[0:(quarter_y + args["lap"]), (quarter_x - args["lap"]):x]  # top right crop
+    roi3 = image[(quarter_y - args["lap"]):y, (quarter_x - args["lap"]):x]  # bottom right crop
+    roi4 = image[(quarter_y - args["lap"]):y, 0:(quarter_x + args["lap"])]  # bottom left crop
     print("Splitting complete.")
 
     if not os.path.exists(output_dir):
@@ -44,16 +44,16 @@ def split_image(x, y, quarterX, quarterY, image, output_dir):
     print("Saving complete.")
 
 
-def show_split(x, y, quarterX, quarterY, image):
+def show_split(x, y, quarter_x, quarter_y, image):
     image2 = image.copy()
 
-    cv2.rectangle(image2, (0, 0), ((quarterX + args["lap"]), (quarterY + args["lap"])), (255, 0, 255),
+    cv2.rectangle(image2, (0, 0), ((quarter_x + args["lap"]), (quarter_y + args["lap"])), (255, 0, 255),
                   2)  # top left
-    cv2.rectangle(image2, ((quarterX - args["lap"]), 0), (x, (quarterY + args["lap"])), (0, 255, 0),
+    cv2.rectangle(image2, ((quarter_x - args["lap"]), 0), (x, (quarter_y + args["lap"])), (0, 255, 0),
                   2)  # top right
-    cv2.rectangle(image2, ((quarterX - args["lap"]), (quarterY - args["lap"])), (x, y), (0, 0, 255),
+    cv2.rectangle(image2, ((quarter_x - args["lap"]), (quarter_y - args["lap"])), (x, y), (0, 0, 255),
                   2)  # bottom right
-    cv2.rectangle(image2, (0, (quarterY - args["lap"])), ((quarterX + args["lap"]), y), (255, 255, 0),
+    cv2.rectangle(image2, (0, (quarter_y - args["lap"])), ((quarter_x + args["lap"]), y), (255, 255, 0),
                   2)  # bottom left
 
     cv2.imshow("Crop areas.", image2)
@@ -70,10 +70,10 @@ def loading_calculating(image_path):
     y, x = image.shape[:2]
 
     # Calculating coordinates for image quarters
-    quarterX = x // 2
-    quarterY = y // 2
+    quarter_x = x // 2
+    quarter_y = y // 2
 
-    return x, y, quarterX, quarterY, image
+    return x, y, quarter_x, quarter_y, image
 
 
 def main():
@@ -90,20 +90,20 @@ def main():
                 filename = file_path.stem
                 output_dir = output_parent_dir / filename
 
-                x, y, quarterX, quarterY, image = loading_calculating(str(file_path))
+                x, y, quarter_x, quarter_y, image = loading_calculating(str(file_path))
 
                 if args["graphical"]:
-                    show_split(x, y, quarterX, quarterY, image)
+                    show_split(x, y, quarter_x, quarter_y, image)
 
-                split_image(x, y, quarterX, quarterY, image, str(output_dir))
+                split_image(x, y, quarter_x, quarter_y, image, str(output_dir))
 
     else:
-        x, y, quarterX, quarterY, image = loading_calculating(args["image"])
+        x, y, quarter_x, quarter_y, image = loading_calculating(args["image"])
 
         if args["graphical"]:
-            show_split(x, y, quarterX, quarterY, image)
+            show_split(x, y, quarter_x, quarter_y, image)
 
-        split_image(x, y, quarterX, quarterY, image, args["output"])
+        split_image(x, y, quarter_x, quarter_y, image, args["output"])
 
 
 if __name__ == "__main__":
