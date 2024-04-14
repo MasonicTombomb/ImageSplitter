@@ -14,7 +14,7 @@ Image Splitter is a Python script that splits an image or batch of images into q
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/image-splitter.git
+   git clone https://github.com/MasonicTombomb/ImageSplitter.git
    ```
 
 2. Install the required dependencies:
